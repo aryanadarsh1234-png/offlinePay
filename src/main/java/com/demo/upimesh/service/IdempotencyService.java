@@ -38,6 +38,14 @@ public class IdempotencyService {
         Instant prev = seen.putIfAbsent(packetHash, now);
         return prev == null;
     }
+    /**
+ * Check if a hash has already been seen — without claiming it.
+ * Used by PaymentStatusService to determine packet status.
+ * Added by Aryan.
+ */
+    public boolean isDuplicate(String packetHash) {
+        return seen.containsKey(packetHash);
+    }
 
     public int size() {
         return seen.size();

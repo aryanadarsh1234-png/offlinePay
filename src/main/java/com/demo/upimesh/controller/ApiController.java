@@ -30,6 +30,7 @@ public class ApiController {
     @Autowired private AccountRepository accountRepo;
     @Autowired private TransactionRepository txRepo;
     @Autowired private IdempotencyService idempotency;
+    @Autowired private PaymentStatusService paymentStatus;
 
     // ------------------------------------------------------------------ key
 
@@ -172,5 +173,21 @@ public class ApiController {
     @GetMapping("/transactions")
     public List<Transaction> listTransactions() {
         return txRepo.findTop20ByOrderByIdDesc();
+    }
+    // --------------------------------------------------------- payment status
+
+/**
+ * NEW ENDPOINT — Added by Aryan
+ * Check the settlement status of a payment using its packet hash.
+ * Returns SETTLED, DUPLICATE_DROPPED, or PENDING.
+ *
+ * Example: GET /api/payment/status/abc123def456
+ */
+    @GetMapping("/payment/status/{packetHash}")
+    public ResponseEntity<?> getPaymentStatus(@PathVariable String packetHash) {
+        if (packetHash == null || packetHash.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "packetHash is required"));
+        }
+        return ResponseEntity.ok(paymentStatus.getStatus(packetHash));
     }
 }
