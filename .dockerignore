@@ -1,0 +1,10 @@
+@"
+target/
+.git/
+.gitignore
+README.md
+.DS_Store
+*.class
+*.jar
+.mvn/
+"@ | Out-File -Encoding UTF8 .dockerignore
